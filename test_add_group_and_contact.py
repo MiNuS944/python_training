@@ -2,7 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-import unittest, time
+import unittest, time, os
 
 from group import Group
 from contact import Contact
@@ -51,7 +51,7 @@ class TestAddGroup(unittest.TestCase):
 
     def logout(self, wd):
         wd.find_element(By.LINK_TEXT, ("Logout")).click()
-
+    
     def test_add_group(self):
         wd = self.wd
         self.open_home_page(wd)
@@ -60,7 +60,7 @@ class TestAddGroup(unittest.TestCase):
         self.create_group(wd, Group(name="tttetst123", header="sasdas", footer="gfdgf"))
         self.return_to_group_page(wd)
         self.logout(wd)
-    
+
     def test_add_empty_group(self):
         wd = self.wd
         self.open_home_page(wd)
@@ -69,7 +69,7 @@ class TestAddGroup(unittest.TestCase):
         self.create_group(wd, Group(name="", header="", footer=""))
         self.return_to_group_page(wd)
         self.logout(wd)
-
+    
     def new_contact(self, wd, contact):
         # init contact creation
         wd.find_element(By.LINK_TEXT, ("add new")).click()
@@ -81,10 +81,10 @@ class TestAddGroup(unittest.TestCase):
         wd.find_element(By.NAME, ("title")).send_keys(contact.title)
         wd.find_element(By.NAME, ("company")).send_keys(contact.company)
         wd.find_element(By.NAME, ("address")).send_keys(contact.address)
-        wd.find_element(By.NAME, ("home")).send_keys(contact.home)
-        wd.find_element(By.NAME, ("mobile")).send_keys(contact.mobile)
-        wd.find_element(By.NAME, ("work")).send_keys(contact.work)
-        wd.find_element(By.NAME, ("fax")).send_keys(contact.fax)
+        wd.find_element(By.NAME, ("home")).send_keys(contact.tel_home)
+        wd.find_element(By.NAME, ("mobile")).send_keys(contact.tel_mobile)
+        wd.find_element(By.NAME, ("work")).send_keys(contact.tel_work)
+        wd.find_element(By.NAME, ("fax")).send_keys(contact.tel_fax)
         wd.find_element(By.NAME, ("email")).send_keys(contact.email)
         wd.find_element(By.NAME, ("email2")).send_keys(contact.email2)
         wd.find_element(By.NAME, ("email3")).send_keys(contact.email3)
@@ -105,11 +105,10 @@ class TestAddGroup(unittest.TestCase):
         wd = self.wd
         self.open_home_page(wd)
         self.login(wd, username="admin", password="secret")
-        # Do not forget to specify the correct PATH to upload photo
         self.new_contact(wd, Contact(firstname="Vanya", middlename="Ivan", lastname="Ivanov", 
-                                   nickname="Ivan3000", photo="C:\\1My_Python\\python_lessons\\python_training\\imya-ivan.jpg", 
+                                   nickname="Ivan3000", photo= os.path.abspath("imya-ivan.jpg"), 
                                    title="QA", company="My Company", address="London, st.test 123", 
-                                   home="1234678", mobile="81112223344", work="+1234567", fax="0987212", 
+                                   tel_home="1234678", tel_mobile="81112223344", tel_work="+1234567", tel_fax="0987212", 
                                    email="ivan300@gmail.com", email2="ivan_300@gmail.com", email3="ivan_3000@gmail.com", 
                                    homepage="ivan.com", bday="1", bmonth="January", 
                                    byear="1980", aday="1", amonth="January", 
