@@ -2,9 +2,9 @@
 import time, os
 import pytest
 
-from group import Group
-from contact import Contact
-from application import Applicaton
+from model.group import Group
+from model.contact import Contact
+from fixture.application import Applicaton
 
 
 @pytest.fixture
@@ -26,7 +26,7 @@ def test_add_empty_group(app):
 def test_new_contact(app):
     app.login(username="admin", password="secret")
     app.new_contact(Contact(firstname="Vanya", middlename="Ivan", lastname="Ivanov", 
-                                   nickname="Ivan3000", photo= os.path.abspath("imya-ivan.jpg"), 
+                                   nickname="Ivan3000", photo= os.path.abspath("files/imya-ivan.jpg"), 
                                    title="QA", company="My Company", address="London, st.test 123", 
                                    tel_home="1234678", tel_mobile="81112223344", tel_work="+1234567", tel_fax="0987212", 
                                    email="ivan300@gmail.com", email2="ivan_300@gmail.com", email3="ivan_3000@gmail.com", 
