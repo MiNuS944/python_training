@@ -16,6 +16,7 @@ class TestAddGroup(unittest.TestCase):
         wd.get("http://localhost/addressbook/")
 
     def login(self, wd, username, password):
+        self.open_home_page(wd)
         wd.find_element(By.NAME, ("user")).click()
         wd.find_element(By.NAME, ("user")).clear()
         wd.find_element(By.NAME, ("user")).send_keys(username)
@@ -28,6 +29,7 @@ class TestAddGroup(unittest.TestCase):
         wd.find_element(By.LINK_TEXT, ("groups")).click()
     
     def create_group(self, wd, group):
+        self.open_groups_page(wd)
         # init group creation
         wd.find_element(By.NAME, ("new")).click()
         # fill group form
@@ -42,6 +44,7 @@ class TestAddGroup(unittest.TestCase):
         wd.find_element(By.NAME, ("group_footer")).send_keys(group.footer)
         # submit group creation
         wd.find_element(By.NAME, ("submit")).click()
+        self.return_to_group_page(wd)
     
     def return_to_group_page(self, wd):
         wd.find_element(By.LINK_TEXT, ("group page")).click()
@@ -54,20 +57,14 @@ class TestAddGroup(unittest.TestCase):
     
     def test_add_group(self):
         wd = self.wd
-        self.open_home_page(wd)
-        self.login(wd, username="admin", password="secret")
-        self.open_groups_page(wd)
-        self.create_group(wd, Group(name="tttetst123", header="sasdas", footer="gfdgf"))
-        self.return_to_group_page(wd)
+        self.login(wd, username="admin", password="secret")       
+        self.create_group(wd, Group(name="tttetst123", header="sasdas", footer="gfdgf"))        
         self.logout(wd)
 
     def test_add_empty_group(self):
-        wd = self.wd
-        self.open_home_page(wd)
-        self.login(wd, username="admin", password="secret")
-        self.open_groups_page(wd)
+        wd = self.wd  
+        self.login(wd, username="admin", password="secret")   
         self.create_group(wd, Group(name="", header="", footer=""))
-        self.return_to_group_page(wd)
         self.logout(wd)
     
     def new_contact(self, wd, contact):
@@ -100,10 +97,10 @@ class TestAddGroup(unittest.TestCase):
         wd.find_element(By.NAME, ("notes")).send_keys(contact.notes)
         # submit contact creation
         wd.find_element(By.NAME, ("submit")).click()
+        self.return_home_page(wd)
 
     def test_new_contact(self):
         wd = self.wd
-        self.open_home_page(wd)
         self.login(wd, username="admin", password="secret")
         self.new_contact(wd, Contact(firstname="Vanya", middlename="Ivan", lastname="Ivanov", 
                                    nickname="Ivan3000", photo= os.path.abspath("imya-ivan.jpg"), 
@@ -115,7 +112,6 @@ class TestAddGroup(unittest.TestCase):
                                    ayear="2000", address2="London st.test 1 213", phone2="2134", 
                                    notes="Hello, world"
                                    ))
-        self.return_home_page(wd)
         self.logout(wd)
 
     def tearDown(self):
