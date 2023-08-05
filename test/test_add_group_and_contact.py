@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
-import time, os
-import pytest
+import os
 
 from model.group import Group
 from model.contact import Contact
-from fixture.application import Applicaton
 
-
-@pytest.fixture
-def app(request):
-    fixture = Applicaton()
-    request.addfinalizer(fixture.destoy)
-    return fixture
 
 def test_add_group(app):
     app.session.login(username="admin", password="secret")       
