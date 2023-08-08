@@ -24,5 +24,5 @@ def test_edit_first_contact(app):
                                    byear="1981", aday="2", amonth="February", 
                                    ayear="2123", address2="London123 st.test 1 213", phone2="2134123", 
                                    notes="Hello, world123"
-                                   )) 
+                                   ))
     app.session.logout()
