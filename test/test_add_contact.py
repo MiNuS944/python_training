@@ -3,7 +3,6 @@ from model.contact import Contact
 
 
 def test_new_contact(app):
-    app.session.login(username="admin", password="secret")
     app.contact.new(Contact(firstname="Vanya", middlename="Ivan", lastname="Ivanov", 
                                    nickname="Ivan3000", photo= os.path.abspath("files/imya-ivan.jpg"), 
                                    title="QA", company="My Company", address="London, st.test 123", 
@@ -14,4 +13,3 @@ def test_new_contact(app):
                                    ayear="2000", address2="London st.test 1 213", phone2="2134", 
                                    notes="Hello, world"
                                    ))
-    app.session.logout()

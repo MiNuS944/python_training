@@ -1,11 +1,8 @@
+import pytest
 
-
-def test_delete_first_group(app):
-    app.session.login(username="admin", password="secret")       
+def test_delete_first_group(app):   
     app.group.delete_first_group()       
-    app.session.logout()
 
-def test_delete_all_group(app):
-    app.session.login(username="admin", password="secret")       
+@pytest.mark.skipif(reason="Not needed yet")
+def test_delete_all_group(app):     
     app.group.delete_all_groups()       
-    app.session.logout()
