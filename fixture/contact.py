@@ -1,23 +1,30 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+import time
 
 class ConctactHelper:
     
     def __init__(self, app):
         self.app = app 
 
+    def home_page(self):
+        wd = self.app.wd
+        if not (wd.current_url.endswith("/index.php") or wd.current_url.endswith("addressbook/") and 
+                len(wd.find_elements(By.CSS_SELECTOR, 'input[value="Send e-Mail"]')) > 0):
+            wd.find_element(By.LINK_TEXT, "home").click()
+
     def select_first_contact(self):
         wd = self.app.wd
-        wd.find_element(By.NAME, ("selected[]")).click()
+        wd.find_element(By.NAME, "selected[]").click()
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
         if text is not None:
             if field_name in ["bday", "bmonth", "aday", "amonth"]:
-                Select(wd.find_element(By.NAME, (field_name))).select_by_visible_text(text)
+                Select(wd.find_element(By.NAME, field_name)).select_by_visible_text(text)
             else:
-                wd.find_element(By.NAME, (field_name)).clear()
-                wd.find_element(By.NAME, (field_name)).send_keys(text)
+                wd.find_element(By.NAME, field_name).clear()
+                wd.find_element(By.NAME, field_name).send_keys(text)
     
     def fill_contact_form(self, contact):
         wd = self.app.wd
@@ -57,7 +64,7 @@ class ConctactHelper:
         wd = self.app.wd
         self.home_page()
         # select all contacts
-        wd.find_element(By.ID, ("MassCB")).click()
+        wd.find_element(By.ID, "MassCB").click()
         self.submit_deletion()
         wd.switch_to.alert.accept()
 
@@ -68,10 +75,10 @@ class ConctactHelper:
     def create(self, contact):
         wd = self.app.wd
         # init contact creation
-        wd.find_element(By.LINK_TEXT, ("add new")).click()
+        wd.find_element(By.LINK_TEXT, "add new").click()
         self.fill_contact_form(contact)
         # submit contact creation
-        wd.find_element(By.NAME, ("submit")).click()
+        wd.find_element(By.NAME, "submit").click()
         self.return_home_page()
     
     def modify_first_contact(self, contact):
@@ -81,18 +88,14 @@ class ConctactHelper:
         wd.find_element(By.CSS_SELECTOR, 'img[alt="Edit"]').click()
         self.fill_contact_form(contact)
         # update contact
-        wd.find_element(By.NAME, ("update")).click()
+        wd.find_element(By.NAME, "update").click()
         self.return_home_page()
    
     def count(self):
        wd = self.app.wd
        self.home_page()
-       return len(wd.find_elements(By.NAME, ("selected[]")))  
-    
-    def home_page(self):
-        wd = self.app.wd
-        wd.find_element(By.LINK_TEXT, ("home")).click()
+       return len(wd.find_elements(By.NAME, "selected[]"))  
 
     def return_home_page(self):
         wd = self.app.wd
-        wd.find_element(By.LINK_TEXT, ("home page")).click()
+        wd.find_element(By.LINK_TEXT, "home page").click()
