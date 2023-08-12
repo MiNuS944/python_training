@@ -4,64 +4,53 @@ from selenium.webdriver.support.ui import Select
 class ConctactHelper:
     
     def __init__(self, app):
-        self.app = app
-    
-    def form_input(self, contact):
-        wd = self.app.wd
-        # filling in contact fields
-        wd.find_element(By.NAME, ("firstname")).clear()
-        wd.find_element(By.NAME, ("firstname")).send_keys(contact.firstname)
-        wd.find_element(By.NAME, ("middlename")).clear()
-        wd.find_element(By.NAME, ("middlename")).send_keys(contact.middlename)
-        wd.find_element(By.NAME, ("lastname")).clear()
-        wd.find_element(By.NAME, ("lastname")).send_keys(contact.lastname)
-        wd.find_element(By.NAME, ("nickname")).clear()
-        wd.find_element(By.NAME, ("nickname")).send_keys(contact.nickname)
-        wd.find_element(By.NAME, ("photo")).send_keys(contact.photo)
-        wd.find_element(By.NAME, ("title")).clear()
-        wd.find_element(By.NAME, ("title")).send_keys(contact.title)
-        wd.find_element(By.NAME, ("company")).clear()
-        wd.find_element(By.NAME, ("company")).send_keys(contact.company)
-        wd.find_element(By.NAME, ("address")).clear()
-        wd.find_element(By.NAME, ("address")).send_keys(contact.address)
-        wd.find_element(By.NAME, ("home")).clear()
-        wd.find_element(By.NAME, ("home")).send_keys(contact.tel_home)
-        wd.find_element(By.NAME, ("mobile")).clear()
-        wd.find_element(By.NAME, ("mobile")).send_keys(contact.tel_mobile)
-        wd.find_element(By.NAME, ("work")).clear()
-        wd.find_element(By.NAME, ("work")).send_keys(contact.tel_work)
-        wd.find_element(By.NAME, ("fax")).clear()
-        wd.find_element(By.NAME, ("fax")).send_keys(contact.tel_fax)
-        wd.find_element(By.NAME, ("email")).clear()
-        wd.find_element(By.NAME, ("email")).send_keys(contact.email)
-        wd.find_element(By.NAME, ("email2")).clear()
-        wd.find_element(By.NAME, ("email2")).send_keys(contact.email2)
-        wd.find_element(By.NAME, ("email3")).clear()
-        wd.find_element(By.NAME, ("email3")).send_keys(contact.email3)
-        wd.find_element(By.NAME, ("homepage")).clear()
-        wd.find_element(By.NAME, ("homepage")).send_keys(contact.homepage)
-        Select(wd.find_element(By.NAME, ("bday"))).select_by_visible_text(contact.bday)
-        Select(wd.find_element(By.NAME, ("bmonth"))).select_by_visible_text(contact.bmonth)
-        wd.find_element(By.NAME, ("byear")).clear()
-        wd.find_element(By.NAME, ("byear")).send_keys(contact.byear)
-        Select(wd.find_element(By.NAME, ("aday"))).select_by_visible_text(contact.aday)
-        Select(wd.find_element(By.NAME, ("amonth"))).select_by_visible_text(contact.amonth)
-        wd.find_element(By.NAME, ("ayear")).clear()
-        wd.find_element(By.NAME, ("ayear")).send_keys(contact.ayear)
-        wd.find_element(By.NAME, ("address2")).clear()
-        wd.find_element(By.NAME, ("address2")).send_keys(contact.address2)
-        wd.find_element(By.NAME, ("phone2")).clear()
-        wd.find_element(By.NAME, ("phone2")).send_keys(contact.phone2)
-        wd.find_element(By.NAME, ("notes")).clear()
-        wd.find_element(By.NAME, ("notes")).send_keys(contact.notes)   
+        self.app = app 
 
+    def select_first_contact(self):
+        wd = self.app.wd
+        wd.find_element(By.NAME, ("selected[]")).click()
+
+    def change_field_value(self, field_name, text):
+        wd = self.app.wd
+        if text is not None:
+            if field_name in ["bday", "bmonth", "aday", "amonth"]:
+                Select(wd.find_element(By.NAME, (field_name))).select_by_visible_text(text)
+            else:
+                wd.find_element(By.NAME, (field_name)).clear()
+                wd.find_element(By.NAME, (field_name)).send_keys(text)
+    
+    def fill_contact_form(self, contact):
+        wd = self.app.wd
+        self.change_field_value("firstname", contact.firstname)
+        self.change_field_value("middlename", contact.middlename)
+        self.change_field_value("lastname", contact.lastname)
+        self.change_field_value("nickname", contact.nickname)
+        self.change_field_value("photo", contact.photo)
+        self.change_field_value("title", contact.title)
+        self.change_field_value("company", contact.company)
+        self.change_field_value("address", contact.address)
+        self.change_field_value("home", contact.tel_home)
+        self.change_field_value("work", contact.tel_mobile)
+        self.change_field_value("fax", contact.tel_fax)
+        self.change_field_value("email", contact.email)
+        self.change_field_value("email2", contact.email2)
+        self.change_field_value("email3", contact.email3)
+        self.change_field_value("homepage", contact.homepage)
+        self.change_field_value("bday", contact.bday)
+        self.change_field_value("bmonth", contact.bmonth)
+        self.change_field_value("byear", contact.byear)
+        self.change_field_value("aday", contact.aday)
+        self.change_field_value("amonth", contact.amonth)
+        self.change_field_value("ayear", contact.ayear)
+        self.change_field_value("address2", contact.address2)
+        self.change_field_value("phone2", contact.phone2)
+        self.change_field_value("notes", contact.notes)
+    
     def delete_first_contact(self):
         wd = self.app.wd
         self.home_page()
-        # select first contact
-        wd.find_element(By.NAME, ("selected[]")).click()
-        # submit deletion
-        wd.find_element(By.CSS_SELECTOR, 'input[value="Delete"]').click()
+        self.select_first_contact()
+        self.submit_deletion()
         wd.switch_to.alert.accept()
     
     def delete_all_contacts(self):
@@ -69,33 +58,41 @@ class ConctactHelper:
         self.home_page()
         # select all contacts
         wd.find_element(By.ID, ("MassCB")).click()
-        # submit deletion
-        wd.find_element(By.CSS_SELECTOR, 'input[value="Delete"]').click()
+        self.submit_deletion()
         wd.switch_to.alert.accept()
 
-    def new(self, contact):
+    def submit_deletion(self):
+        wd = self.app.wd
+        wd.find_element(By.CSS_SELECTOR, 'input[value="Delete"]').click()
+
+    def create(self, contact):
         wd = self.app.wd
         # init contact creation
         wd.find_element(By.LINK_TEXT, ("add new")).click()
-        self.form_input(contact)
+        self.fill_contact_form(contact)
         # submit contact creation
         wd.find_element(By.NAME, ("submit")).click()
         self.return_home_page()
-
-    def home_page(self):
-        wd = self.app.wd
-        wd.find_element(By.LINK_TEXT, ("home")).click()
     
-    def edit_first_contact(self, contact):
+    def modify_first_contact(self, contact):
         wd = self.app.wd
         self.home_page()
-        # edit first contact
+        # open modification form
         wd.find_element(By.CSS_SELECTOR, 'img[alt="Edit"]').click()
-        self.form_input(contact)
+        self.fill_contact_form(contact)
         # update contact
         wd.find_element(By.NAME, ("update")).click()
         self.return_home_page()
    
+    def count(self):
+       wd = self.app.wd
+       self.home_page()
+       return len(wd.find_elements(By.NAME, ("selected[]")))  
+    
+    def home_page(self):
+        wd = self.app.wd
+        wd.find_element(By.LINK_TEXT, ("home")).click()
+
     def return_home_page(self):
         wd = self.app.wd
         wd.find_element(By.LINK_TEXT, ("home page")).click()
