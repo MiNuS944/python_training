@@ -16,8 +16,15 @@ class ConctactHelper:
             wd.find_element(By.LINK_TEXT, "home").click()
 
     def select_first_contact(self):
+        self.select_contact_by_index(0)
+
+    def select_contact_by_index(self, index):
         wd = self.app.wd
-        wd.find_element(By.NAME, "selected[]").click()
+        wd.find_elements(By.NAME, "selected[]")[index].click()
+    
+    def select_contact_edit_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements(By.CSS_SELECTOR, 'img[alt="Edit"]')[index].click()
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
@@ -39,7 +46,8 @@ class ConctactHelper:
         self.change_field_value("company", contact.company)
         self.change_field_value("address", contact.address)
         self.change_field_value("home", contact.tel_home)
-        self.change_field_value("work", contact.tel_mobile)
+        self.change_field_value("mobile", contact.tel_mobile)
+        self.change_field_value("work", contact.tel_work)
         self.change_field_value("fax", contact.tel_fax)
         self.change_field_value("email", contact.email)
         self.change_field_value("email2", contact.email2)
@@ -55,13 +63,16 @@ class ConctactHelper:
         self.change_field_value("phone2", contact.phone2)
         self.change_field_value("notes", contact.notes)
     
-    def delete_first_contact(self):
+    def delete_by_index_contact(self, index):
         wd = self.app.wd
         self.home_page()
-        self.select_first_contact()
+        self.select_contact_by_index(index)
         self.submit_deletion()
         wd.switch_to.alert.accept()
         self.contact_cache = None
+    
+    def delete_first_contact(self):
+        self.delete_by_index_contact(0)
     
     def delete_all_contacts(self):
         wd = self.app.wd
@@ -86,12 +97,15 @@ class ConctactHelper:
         self.return_home_page()
         self.contact_cache = None
     
-    def modify_first_contact(self, contact):
+    def modify_first_contact(self, new_data_contact):
+        self.modify_contact_by_index(0, new_data_contact)
+
+    def modify_contact_by_index(self, index, new_data_contact):
         wd = self.app.wd
         self.home_page()
         # open modification form
-        wd.find_element(By.CSS_SELECTOR, 'img[alt="Edit"]').click()
-        self.fill_contact_form(contact)
+        self.select_contact_edit_by_index(index)
+        self.fill_contact_form(new_data_contact)
         # update contact
         wd.find_element(By.NAME, "update").click()
         self.return_home_page()
