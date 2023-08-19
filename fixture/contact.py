@@ -61,6 +61,7 @@ class ConctactHelper:
         self.select_first_contact()
         self.submit_deletion()
         wd.switch_to.alert.accept()
+        self.contact_cache = None
     
     def delete_all_contacts(self):
         wd = self.app.wd
@@ -69,6 +70,7 @@ class ConctactHelper:
         wd.find_element(By.ID, "MassCB").click()
         self.submit_deletion()
         wd.switch_to.alert.accept()
+        self.contact_cache = None
 
     def submit_deletion(self):
         wd = self.app.wd
@@ -82,6 +84,7 @@ class ConctactHelper:
         # submit contact creation
         wd.find_element(By.NAME, "submit").click()
         self.return_home_page()
+        self.contact_cache = None
     
     def modify_first_contact(self, contact):
         wd = self.app.wd
@@ -92,6 +95,7 @@ class ConctactHelper:
         # update contact
         wd.find_element(By.NAME, "update").click()
         self.return_home_page()
+        self.contact_cache = None
    
     def count(self):
        wd = self.app.wd
@@ -102,15 +106,18 @@ class ConctactHelper:
         wd = self.app.wd
         wd.find_element(By.LINK_TEXT, "home page").click()
 
+    contact_cache = None     
+
     def get_contact_list(self):
-        wd = self.app.wd
-        self.home_page()
-        contacts = []
-        for element in wd.find_elements(By.CSS_SELECTOR, 'tr:has(td.center)'):
-            tds = element.find_elements(By.TAG_NAME, "td")
-            text_last_name = tds[1].text
-            text_first_name = tds[2].text
-            id = element.find_element(By.NAME, "selected[]").get_attribute("value")
-            contacts.append(Contact(firstname=text_first_name, lastname=text_last_name, id=id))
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.home_page()
+            self.contact_cache = []
+            for element in wd.find_elements(By.CSS_SELECTOR, 'tr:has(td.center)'):
+                tds = element.find_elements(By.TAG_NAME, "td")
+                text_last_name = tds[1].text
+                text_first_name = tds[2].text
+                id = element.find_element(By.NAME, "selected[]").get_attribute("value")
+                self.contact_cache.append(Contact(firstname=text_first_name, lastname=text_last_name, id=id))
             
-        return contacts
+        return self.contact_cache
