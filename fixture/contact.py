@@ -1,6 +1,8 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-import time
+
+
+from model.contact import Contact
 
 class ConctactHelper:
     
@@ -99,3 +101,16 @@ class ConctactHelper:
     def return_home_page(self):
         wd = self.app.wd
         wd.find_element(By.LINK_TEXT, "home page").click()
+
+    def get_contact_list(self):
+        wd = self.app.wd
+        self.home_page()
+        contacts = []
+        for element in wd.find_elements(By.CSS_SELECTOR, 'tr:has(td.center)'):
+            tds = element.find_elements(By.TAG_NAME, "td")
+            text_last_name = tds[1].text
+            text_first_name = tds[2].text
+            id = element.find_element(By.NAME, "selected[]").get_attribute("value")
+            contacts.append(Contact(firstname=text_first_name, lastname=text_last_name, id=id))
+            
+        return contacts
