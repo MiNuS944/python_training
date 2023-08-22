@@ -134,4 +134,4 @@ class ConctactHelper:
                 id = element.find_element(By.NAME, "selected[]").get_attribute("value")
                 self.contact_cache.append(Contact(firstname=text_first_name, lastname=text_last_name, id=id))
             
-        return self.contact_cache
+        return list(self.contact_cache)
