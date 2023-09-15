@@ -25,6 +25,5 @@ def test_modify_group_header(app):
     assert len(old_groups) == app.group.count()
     new_groups = app.group.get_group_list()
     old_groups[0] = group
-    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
-       
+    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)  
     

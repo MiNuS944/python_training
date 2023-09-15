@@ -1,3 +1,4 @@
+import re
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -25,6 +26,10 @@ class ConctactHelper:
     def select_contact_edit_by_index(self, index):
         wd = self.app.wd
         wd.find_elements(By.CSS_SELECTOR, 'img[alt="Edit"]')[index].click()
+        
+    def select_contact_view_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements(By.CSS_SELECTOR, 'img[alt="Details"]')[index].click()
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
@@ -132,6 +137,37 @@ class ConctactHelper:
                 text_last_name = tds[1].text
                 text_first_name = tds[2].text
                 id = element.find_element(By.NAME, "selected[]").get_attribute("value")
-                self.contact_cache.append(Contact(firstname=text_first_name, lastname=text_last_name, id=id))
-            
+                all_phones = tds[5].text.splitlines()
+                self.contact_cache.append(Contact(firstname=text_first_name, lastname=text_last_name, id=id, 
+                                                  tel_home=all_phones[0], tel_mobile=all_phones[1],
+                                                  tel_work=all_phones[2], phone2=all_phones[3]))
+        
         return list(self.contact_cache)
+
+        
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.home_page()
+        self.select_contact_edit_by_index(index)
+        firstname = wd.find_element(By.NAME, "firstname").get_attribute("value")
+        lastname = wd.find_element(By.NAME, "lastname").get_attribute("value")
+        id = wd.find_element(By.NAME, "id").get_attribute("value")
+        tel_home = wd.find_element(By.NAME, "home").get_attribute("value")
+        tel_mobile = wd.find_element(By.NAME, "mobile").get_attribute("value")
+        tel_work = wd.find_element(By.NAME, "work").get_attribute("value")
+        phone2 = wd.find_element(By.NAME, "phone2").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id, 
+                       tel_home=tel_home, tel_mobile=tel_mobile,
+                        tel_work= tel_work, phone2=phone2)
+    
+    def get_contact_info_from_view_page(self, index):
+        wd = self.app.wd
+        self.home_page()
+        self.select_contact_view_by_index(index)
+        text = wd.find_element(By.ID, "content").text
+        tel_home = re.search("H: (.*)", text).group(1)
+        tel_mobile = re.search("M: (.*)", text).group(1)
+        tel_work = re.search("W: (.*)", text).group(1)
+        phone2 = re.search("P: (.*)", text).group(1)
+        return Contact(tel_home=tel_home, tel_mobile=tel_mobile,
+                        tel_work= tel_work, phone2=phone2)
