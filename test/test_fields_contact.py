@@ -5,7 +5,6 @@ from random import randrange
 def test_fields_contact_on_home_page(app):
     all_contacts = app.contact.get_contact_list()
     index = randrange(len(all_contacts))
-    print(index)
     contact_from_home_page = all_contacts[index]
     contact_from_edit_page = app.contact.get_contact_info_from_edit_page(index)
 
