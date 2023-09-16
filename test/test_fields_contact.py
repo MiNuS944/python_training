@@ -1,8 +1,12 @@
 import re
+from model.contact import Contact
 from random import randrange
 
 
 def test_fields_contact_on_home_page(app):
+    if app.contact.count() == 0:
+        app.contact.create(Contact(firstname="Vanya", middlename="Ivan", lastname="Ivanov",
+                                   tel_home = "+79921", email="sssiv@tu.com"))
     all_contacts = app.contact.get_contact_list()
     index = randrange(len(all_contacts))
     contact_from_home_page = all_contacts[index]
