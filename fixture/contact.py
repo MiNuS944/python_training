@@ -2,7 +2,6 @@ import re
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
-
 from model.contact import Contact
 
 class ConctactHelper:
@@ -207,3 +206,19 @@ class ConctactHelper:
         self.submit_deletion()
         wd.switch_to.alert.accept()
         self.contact_cache = None
+
+    def add_contact_in_group(self, contact, group):
+        wd = self.app.wd
+        self.home_page()
+        self.select_contact_by_id(contact.id)
+        Select(wd.find_element(By.NAME, 'to_group')).select_by_value(group.id)
+        wd.find_element(By.CSS_SELECTOR, "input[value='Add to']").click()
+        wd.find_element(By.PARTIAL_LINK_TEXT, "group page").click()
+    
+    def del_contact_in_group(self, contact, group):
+        wd = self.app.wd
+        self.home_page()
+        Select(wd.find_element(By.NAME, 'group')).select_by_value(group.id)
+        self.select_contact_by_id(contact.id)
+        wd.find_element(By.NAME, "remove").click()
+        wd.find_element(By.PARTIAL_LINK_TEXT, "group page").click()
