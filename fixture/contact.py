@@ -23,9 +23,18 @@ class ConctactHelper:
         wd = self.app.wd
         wd.find_elements(By.NAME, "selected[]")[index].click()
     
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element(By.CSS_SELECTOR, "input[value='%s']" % id).click() 
+    
     def select_contact_edit_by_index(self, index):
         wd = self.app.wd
         wd.find_elements(By.CSS_SELECTOR, 'img[alt="Edit"]')[index].click()
+    
+    def select_contact_edit_by_id(self, id):
+        wd = self.app.wd
+        contact = wd.find_element(By.CSS_SELECTOR, "tr:has(input[value='%s'])" % id)
+        contact.find_element(By.CSS_SELECTOR, 'img[alt="Edit"]').click()
         
     def select_contact_view_by_index(self, index):
         wd = self.app.wd
@@ -115,6 +124,17 @@ class ConctactHelper:
         wd.find_element(By.NAME, "update").click()
         self.return_home_page()
         self.contact_cache = None
+
+    def modify_contact_by_id(self, id, new_data_contact):
+        wd = self.app.wd
+        self.home_page()
+        # open modification form
+        self.select_contact_edit_by_id(id)
+        self.fill_contact_form(new_data_contact)
+        # update contact
+        wd.find_element(By.NAME, "update").click()
+        self.return_home_page()
+        self.contact_cache = None
    
     def count(self):
        wd = self.app.wd
@@ -178,3 +198,12 @@ class ConctactHelper:
         phone2 = re.search("P: (.*)", text).group(1)
         return Contact(tel_home=tel_home, tel_mobile=tel_mobile,
                         tel_work= tel_work, phone2=phone2)
+    
+
+    def delete_by_id_contact(self, id):
+        wd = self.app.wd
+        self.home_page()
+        self.select_contact_by_id(id)
+        self.submit_deletion()
+        wd.switch_to.alert.accept()
+        self.contact_cache = None
