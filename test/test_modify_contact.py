@@ -1,4 +1,3 @@
-import os
 from model.contact import Contact
 import random
 
@@ -14,12 +13,8 @@ def test_modify_contact_name(app, db, check_ui):
     app.contact.modify_contact_by_id(contact.id, contact)
     assert len(old_contacts) == len(db.get_contact_list())
     new_contacts = db.get_contact_list()
-
-    for i, cn in enumerate(old_contacts):
-        if cn.id == contact.id:
-            # Выполняем замену атрибутов
-            old_contacts[i] = contact
-
+    old_contacts.remove(contact_db)
+    old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
     if check_ui:
         assert sorted(new_contacts, key=Contact.id_or_max) == sorted(app.contact.get_contact_list(), key=Contact.id_or_max)
@@ -35,12 +30,8 @@ def test_modify_contact_Birthday(app, db, check_ui):
     app.contact.modify_contact_by_id(contact.id, contact)
     assert len(old_contacts) == len(db.get_contact_list())
     new_contacts = db.get_contact_list()
-    
-    for i, cn in enumerate(old_contacts):
-        if cn.id == contact.id:
-            # Выполняем замену атрибутов
-            old_contacts[i] = contact
-    
+    old_contacts.remove(old_contacts[0])
+    old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
     if check_ui:
         assert sorted(new_contacts, key=Contact.id_or_max) == sorted(app.contact.get_contact_list(), key=Contact.id_or_max)

@@ -11,12 +11,8 @@ def test_modify_group_name(app, db, check_ui):
     app.group.modify_group_by_id(group.id, group)
     assert len(old_groups) == len(db.get_group_list())
     new_groups = db.get_group_list()
-    
-    for i, gr in enumerate(old_groups):
-        if gr.id == group.id:
-            # Выполняем замену атрибутов
-            old_groups[i] = group
-
+    old_groups.remove(group_db)
+    old_groups.append(group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
     if check_ui:
         assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)
@@ -31,12 +27,8 @@ def test_modify_group_header(app, db, check_ui):
     app.group.modify_group_by_id(group.id, group)
     assert len(old_groups) == len(db.get_group_list())
     new_groups = db.get_group_list()
-    
-    for i, gr in enumerate(old_groups):
-        if gr.id == group.id:
-            # Выполняем замену атрибутов
-            old_groups[i] = group
-
+    old_groups.remove(old_groups[0])
+    old_groups.append(group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
     if check_ui:
         assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)  
