@@ -3,7 +3,7 @@ from model.contact import Contact
 from random import randrange
 
 
-def test_fields_contact_on_home_page(app):
+def test_fields_contact_on_home_page_with_edit_page(app):
     if app.contact.count() == 0:
         app.contact.create(Contact(firstname="Vanya", middlename="Ivan", lastname="Ivanov",
                                    tel_home = "+79921", email="sssiv@tu.com"))
@@ -17,6 +17,11 @@ def test_fields_contact_on_home_page(app):
     assert contact_from_home_page.address == contact_from_edit_page.address
     assert contact_from_home_page.all_phones_from_home_page == merge_phones_like_on_home_page(contact_from_edit_page)
     assert contact_from_home_page.all_emails_from_home_page == merge_emails_like_on_home_page(contact_from_edit_page)
+
+def test_fields_contact_on_home_page_with_db(app, db):
+    contact_on_home_page = app.contact.get_contact_list()
+    contact_list_db = db.get_contact_list()
+    assert sorted(contact_on_home_page, key=Contact.id_or_max) == sorted(contact_list_db, key=Contact.id_or_max)
 
 def clear(s):
     return re.sub("[() -]", "", s)
