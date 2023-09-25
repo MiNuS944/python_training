@@ -19,9 +19,17 @@ def test_fields_contact_on_home_page_with_edit_page(app):
     assert contact_from_home_page.all_emails_from_home_page == merge_emails_like_on_home_page(contact_from_edit_page)
 
 def test_fields_contact_on_home_page_with_db(app, db):
-    contact_on_home_page = app.contact.get_contact_list()
-    contact_list_db = db.get_contact_list()
-    assert sorted(contact_on_home_page, key=Contact.id_or_max) == sorted(contact_list_db, key=Contact.id_or_max)
+    contacts_on_home_page = sorted(app.contact.get_contact_list(), key=Contact.id_or_max)
+    contacts_list_db = sorted(db.get_contact_list(), key=Contact.id_or_max)
+    for contact_from_home_page in contacts_on_home_page:
+        for contact_from_db in contacts_list_db:
+            if contact_from_home_page.id == contact_from_db.id:
+                assert contact_from_home_page.lastname == contact_from_db.lastname
+                assert contact_from_home_page.firstname == contact_from_db.firstname
+                assert contact_from_home_page.address == contact_from_db.address
+                assert contact_from_home_page.all_emails_from_home_page == merge_emails_like_on_home_page(contact_from_db)
+                assert contact_from_home_page.all_phones_from_home_page == merge_phones_like_on_home_page(contact_from_db)
+
 
 def clear(s):
     return re.sub("[() -]", "", s)
